@@ -20,13 +20,12 @@
     const result = document.getElementById('result');
 
     form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const data = new FormData(form);
-  const response = await fetch('/convert', { method: 'POST', body: data });
-  const html = await response.text();
-  result.innerHTML = html; // tables, headings, paragraphs sab render honge
-});
-
+      e.preventDefault();
+      const data = new FormData(form);
+      const response = await fetch('/convert', { method: 'POST', body: data });
+      const html = await response.text();
+      result.innerHTML = html; // Clean Word formatting + tables
+    });
   </script>
 </body>
 </html>
