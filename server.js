@@ -10,7 +10,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Serve frontend
-app.use(express.static('.'));
+app.use(express.static('public'));
 
 // DOCX → HTML conversion
 app.post('/convert', upload.single('docxFile'), async (req, res) => {
