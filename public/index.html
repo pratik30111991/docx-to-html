@@ -13,7 +13,7 @@
   </form>
   <hr>
   <h2>HTML Output:</h2>
-  <div id="result" style="border:1px solid #ccc; padding:10px"></div>
+  <div id="result" style="border:1px solid #ccc; padding:10px;"></div>
 
   <script>
     const form = document.getElementById('uploadForm');
@@ -24,7 +24,7 @@
       const data = new FormData(form);
       const response = await fetch('/convert', { method: 'POST', body: data });
       const html = await response.text();
-      result.innerHTML = html;
+      result.innerHTML = html; // tables, headings, paragraphs sab render honge
     });
   </script>
 </body>
