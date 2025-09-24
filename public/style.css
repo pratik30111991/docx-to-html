@@ -28,6 +28,11 @@ table, th, td {
   padding: 8px;
 }
 
+/* Extra border for mammoth mapped tables */
+.table-bordered, .table-bordered th, .table-bordered td {
+  border: 1px solid #333;
+}
+
 p {
   margin: 10px 0;
 }
