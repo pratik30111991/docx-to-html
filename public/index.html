@@ -11,5 +11,35 @@
     <input type="file" name="docxFile" accept=".docx" required>
     <button type="submit">Convert</button>
   </form>
+
+  <hr>
+
+  <h2>Or Paste Your Content Here</h2>
+  <form id="pasteForm">
+    <textarea name="rawContent" id="rawContent" rows="15" style="width:100%;" placeholder="Paste your content here..."></textarea>
+    <button type="submit">Convert to HTML</button>
+  </form>
+
+  <h2>Preview</h2>
+  <div id="preview" class="output"></div>
+
+  <script>
+    const pasteForm = document.getElementById('pasteForm');
+    const preview = document.getElementById('preview');
+
+    pasteForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = document.getElementById('rawContent').value;
+
+      const response = await fetch('/convert-text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+
+      const html = await response.text();
+      preview.innerHTML = html;
+    });
+  </script>
 </body>
 </html>
