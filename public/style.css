@@ -18,18 +18,17 @@ h1, h2, h3 {
 }
 
 table {
-  border-collapse: collapse;  /* important: extra space removed */
+  border-collapse: collapse;
   width: 100%;
   margin: 20px 0;
 }
 
 th, td {
   border: 1px solid #333;
-  padding: 5px;  /* reduce if extra space */
+  padding: 5px;
   text-align: left;
 }
 
-/* Extra border for mammoth mapped tables */
 .table-bordered, .table-bordered th, .table-bordered td {
   border: 1px solid #333;
 }
@@ -42,4 +41,9 @@ br {
   content: "";
   display: block;
   margin: 5px 0;
+}
+
+textarea {
+  font-family: monospace;
+  font-size: 14px;
 }
