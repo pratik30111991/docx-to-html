@@ -1,32 +1,31 @@
 const express = require("express");
 const multer = require("multer");
-const mammoth = require("mammoth");
+const fs = require("fs");
 const path = require("path");
+const { JSDOM } = require("jsdom");
+const htmlDocx = require("html-docx-js");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
-// serve frontend files
 app.use(express.static("public"));
 
-// upload endpoint
+// Upload endpoint
 app.post("/upload", upload.single("docxFile"), async (req, res) => {
   try {
-    const result = await mammoth.convertToHtml({ path: req.file.path }, {
-      styleMap: [
-        "p[style-name='Heading 1'] => h1:fresh",
-        "p[style-name='Heading 2'] => h2:fresh",
-        "p[style-name='Normal'] => p:fresh",
-        "table => table.table-bordered",
-        "b => strong",
-        "i => em"
-      ]
-    });
-    const htmlContent = result.value;
+    const filePath = req.file.path;
+    console.log("File uploaded:", filePath);
+
+    const docBuffer = fs.readFileSync(filePath);
+    const htmlContent = htmlDocx.asHTML(docBuffer);
+
+    // Optional: clean temp file
+    fs.unlinkSync(filePath);
+
     res.send(htmlContent);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Conversion error");
+    console.error("Conversion error:", err);
+    res.status(500).send("Error converting DOCX file.");
   }
 });
 
