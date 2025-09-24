@@ -3,32 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>DOCX to HTML Converter</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>Upload DOCX File</h2>
+  <h1>DOCX to HTML Converter</h1>
+
   <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
     <input type="file" name="docxFile" accept=".docx" required>
     <button type="submit">Convert</button>
   </form>
 
-  <h2>Preview Converted HTML</h2>
+  <h2>Preview</h2>
   <div id="preview" class="output"></div>
 
-  <script>
-    const form = document.getElementById('uploadForm');
-    const preview = document.getElementById('preview');
+  <h2>Copy HTML Output</h2>
+  <textarea id="htmlOutput" class="output" readonly></textarea>
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const fileInput = form.querySelector('input[name="docxFile"]');
-      const formData = new FormData();
-      formData.append('docxFile', fileInput.files[0]);
-
-      const res = await fetch('/upload', { method: 'POST', body: formData });
-      const html = await res.text();
-      preview.innerHTML = html;
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
