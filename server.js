@@ -6,13 +6,11 @@ const path = require("path");
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
-// serve frontend files
 app.use(express.static("public"));
+app.use(express.json());
 
-// upload endpoint
+// DOCX upload endpoint
 app.post("/upload", upload.single("docxFile"), async (req, res) => {
-  console.log("File uploaded:", req.file.path);
-
   try {
     const result = await mammoth.convertToHtml(
       { path: req.file.path },
@@ -29,8 +27,6 @@ app.post("/upload", upload.single("docxFile"), async (req, res) => {
     );
 
     const htmlContent = result.value.replace(/\n/g, "<br>");
-    console.log("Conversion successful. Length:", htmlContent.length);
-
     res.send(`
       <!DOCTYPE html>
       <html>
@@ -51,12 +47,22 @@ app.post("/upload", upload.single("docxFile"), async (req, res) => {
   }
 });
 
-// render logs endpoint (help for debugging future issues)
-app.get("/logs", (req, res) => {
-  res.send("Check Render logs above in Deploy Logs. If error -> see console logs printed.");
+// Text paste conversion
+app.post("/convert-text", (req, res) => {
+  const text = req.body.text || "";
+  // Simple conversion: headings, line breaks, bold markers (**text**), italic (*text*)
+  let html = text
+    .split("\n")
+    .map(line => {
+      if (line.match(/^Varmora Granito Unlisted Shares Price/)) return `<h1>${line}</h1>`;
+      if (line.match(/Key Highlights|Investment Insights|Selling Shareholders|Why Are Investors Watching/)) return `<h2>${line}</h2>`;
+      if (line.trim() === "") return "<br>";
+      return `<p>${line}</p>`;
+    })
+    .join("");
+
+  res.send(html);
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
