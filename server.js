@@ -28,7 +28,7 @@ app.post("/upload", upload.single("docxFile"), async (req, res) => {
       }
     );
 
-    const htmlContent = result.value;
+    const htmlContent = result.value.replace(/\n/g, "<br>");
     console.log("Conversion successful. Length:", htmlContent.length);
 
     res.send(`
