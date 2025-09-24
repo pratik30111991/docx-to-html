@@ -8,26 +8,42 @@
 </head>
 <body>
   <h1>DOCX to HTML Converter</h1>
+
+  <!-- File Upload -->
   <input type="file" id="upload" accept=".docx">
+  <button id="convertBtn">Convert</button>
+
   <hr>
   <h2>HTML Output:</h2>
   <div id="result" class="docx-container"></div>
 
   <script src="docx-preview.min.js"></script>
   <script>
+    let selectedFile = null;
     const upload = document.getElementById('upload');
+    const convertBtn = document.getElementById('convertBtn');
     const result = document.getElementById('result');
-    upload.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+
+    // Save file in memory when user selects it
+    upload.addEventListener('change', (e) => {
+      selectedFile = e.target.files[0];
+    });
+
+    // Convert only when button is clicked
+    convertBtn.addEventListener('click', () => {
+      if (!selectedFile) {
+        alert("Please select a DOCX file first!");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = async (event) => {
-        result.innerHTML = ""; // clear old
+        result.innerHTML = ""; // clear old result
         const docxData = event.target.result;
         const docxPreview = new window.docx_preview.DocxPreview();
         await docxPreview.renderAsync(docxData, result);
       };
-      reader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(selectedFile);
     });
   </script>
 </body>
