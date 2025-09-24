@@ -1,53 +1,26 @@
-const uploadForm = document.getElementById("uploadForm");
-const editorContainer = document.getElementById("editorContainer");
-const htmlEditor = document.getElementById("htmlEditor");
-const preview = document.getElementById("preview");
-const copyHtmlBtn = document.getElementById("copyHtmlBtn");
-const tabPreview = document.getElementById("tabPreview");
-const tabHtml = document.getElementById("tabHtml");
+const form = document.getElementById('uploadForm');
+const preview = document.getElementById('preview');
+const htmlOutput = document.getElementById('htmlOutput');
 
-uploadForm.addEventListener("submit", async (e) => {
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const fileInput = uploadForm.querySelector("input[name='docxFile']");
+
+  const fileInput = form.querySelector('input[name="docxFile"]');
   const formData = new FormData();
-  formData.append("docxFile", fileInput.files[0]);
+  formData.append('docxFile', fileInput.files[0]);
 
-  const res = await fetch("/upload", { method: "POST", body: formData });
-  const html = await res.text();
+  const response = await fetch('/upload', { method: 'POST', body: formData });
 
-  // show editor container
-  editorContainer.style.display = "block";
-  
-  // set editor and preview
-  htmlEditor.value = html;
-  preview.innerHTML = html;
-  htmlEditor.style.display = "none";
-  tabPreview.classList.add("active");
-  tabHtml.classList.remove("active");
-});
+  if (!response.ok) {
+    alert('Error converting DOCX file!');
+    return;
+  }
 
-// tab switch
-tabPreview.addEventListener("click", () => {
-  htmlEditor.style.display = "none";
-  preview.style.display = "block";
-  tabPreview.classList.add("active");
-  tabHtml.classList.remove("active");
-});
-tabHtml.addEventListener("click", () => {
-  htmlEditor.style.display = "block";
-  preview.style.display = "none";
-  tabHtml.classList.add("active");
-  tabPreview.classList.remove("active");
-});
+  const htmlContent = await response.text();
 
-// live preview update
-htmlEditor.addEventListener("input", () => {
-  preview.innerHTML = htmlEditor.value;
-});
+  // Display converted HTML in preview
+  preview.innerHTML = htmlContent;
 
-// copy HTML
-copyHtmlBtn.addEventListener("click", () => {
-  htmlEditor.select();
-  document.execCommand("copy");
-  alert("HTML copied to clipboard!");
+  // Copy HTML tags to textarea
+  htmlOutput.value = htmlContent;
 });
