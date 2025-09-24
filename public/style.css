@@ -1,1 +1,16 @@
-Tets
+.docx-container {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-top: 10px;
+  background: #fff;
+}
+.docx-container table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 10px 0;
+}
+.docx-container table td, 
+.docx-container table th {
+  border: 1px solid #000;
+  padding: 6px;
+}
