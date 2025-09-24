@@ -1,27 +1,37 @@
 const express = require("express");
 const multer = require("multer");
-const fs = require("fs");
+const mammoth = require("mammoth");
 const path = require("path");
-const { JSDOM } = require("jsdom");
-const htmlDocx = require("html-docx-js");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
 
+// Serve frontend files
 app.use(express.static("public"));
 
 // Upload endpoint
 app.post("/upload", upload.single("docxFile"), async (req, res) => {
+  console.log("File uploaded:", req.file.path);
+
   try {
-    const filePath = req.file.path;
-    console.log("File uploaded:", filePath);
+    const result = await mammoth.convertToHtml(
+      { path: req.file.path },
+      {
+        styleMap: [
+          "p[style-name='Heading 1'] => h1:fresh",
+          "p[style-name='Heading 2'] => h2:fresh",
+          "p[style-name='Heading 3'] => h3:fresh",
+          "p[style-name='Normal'] => p:fresh",
+          "table => table.table-bordered",
+          "b => strong",
+          "i => em"
+        ]
+      }
+    );
 
-    const docBuffer = fs.readFileSync(filePath);
-    const htmlContent = htmlDocx.asHTML(docBuffer);
+    const htmlContent = result.value;
 
-    // Optional: clean temp file
-    fs.unlinkSync(filePath);
-
+    // Send HTML content as plain text (includes proper HTML tags)
     res.send(htmlContent);
   } catch (err) {
     console.error("Conversion error:", err);
@@ -30,4 +40,6 @@ app.post("/upload", upload.single("docxFile"), async (req, res) => {
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
