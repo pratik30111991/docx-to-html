@@ -23,9 +23,10 @@ table {
   margin: 20px 0;
 }
 
-table, th, td {
+th, td {
   border: 1px solid #333;
-  padding: 8px;
+  padding: 5px;  /* reduce if extra space */
+  text-align: left;
 }
 
 /* Extra border for mammoth mapped tables */
