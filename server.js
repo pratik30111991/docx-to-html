@@ -10,16 +10,16 @@ const upload = multer({ dest: "uploads/" });
 
 app.use(express.static("public"));
 
-// DOCX upload + convert API
+// API endpoint to convert DOCX -> HTML
 app.post("/convert", upload.single("docx"), async (req, res) => {
   const filePath = req.file.path;
 
   try {
-    // First try Mammoth
+    // First try Mammoth (good for clean text, headings)
     const result = await mammoth.convertToHtml({ path: filePath });
     let html = result.value;
 
-    // If tables missing → fallback to libreoffice converter
+    // If tables are missing -> fallback to LibreOffice
     if (!html.includes("<table")) {
       const outPath = filePath + ".html";
       exec(`soffice --headless --convert-to html ${filePath} --outdir uploads`, (err) => {
@@ -29,6 +29,8 @@ app.post("/convert", upload.single("docx"), async (req, res) => {
         }
         const htmlContent = fs.readFileSync(outPath, "utf8");
         res.send(htmlContent);
+
+        // cleanup
         fs.unlinkSync(filePath);
         fs.unlinkSync(outPath);
       });
@@ -37,10 +39,11 @@ app.post("/convert", upload.single("docx"), async (req, res) => {
       fs.unlinkSync(filePath);
     }
   } catch (e) {
-    console.error(e);
+    console.error("Error in conversion:", e);
     res.status(500).send("Conversion failed");
   }
 });
 
+// Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
