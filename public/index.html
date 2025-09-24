@@ -2,49 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DOCX to HTML Converter</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>DOCX to HTML Converter</h1>
 
-  <!-- File Upload -->
-  <input type="file" id="upload" accept=".docx">
-  <button id="convertBtn">Convert</button>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="docx" id="docx" accept=".docx" required>
+    <button type="submit">Convert</button>
+  </form>
 
-  <hr>
-  <h2>HTML Output:</h2>
-  <div id="result" class="docx-container"></div>
+  <h2>Converted HTML:</h2>
+  <div id="result"></div>
 
-  <script src="docx-preview.min.js"></script>
-  <script>
-    let selectedFile = null;
-    const upload = document.getElementById('upload');
-    const convertBtn = document.getElementById('convertBtn');
-    const result = document.getElementById('result');
-
-    // Save file in memory when user selects it
-    upload.addEventListener('change', (e) => {
-      selectedFile = e.target.files[0];
-    });
-
-    // Convert only when button is clicked
-    convertBtn.addEventListener('click', () => {
-      if (!selectedFile) {
-        alert("Please select a DOCX file first!");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        result.innerHTML = ""; // clear old result
-        const docxData = event.target.result;
-        const docxPreview = new window.docx_preview.DocxPreview();
-        await docxPreview.renderAsync(docxData, result);
-      };
-      reader.readAsArrayBuffer(selectedFile);
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
