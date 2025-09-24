@@ -33,3 +33,14 @@ th, td {
 p {
   margin: 10px 0;
 }
+
+br {
+  content: "";
+  display: block;
+  margin: 5px 0;
+}
+
+textarea {
+  width: 100%;
+  min-height: 200px;
+}
